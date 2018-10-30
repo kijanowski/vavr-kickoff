@@ -45,7 +45,7 @@ public class OptionMonad {
   // do it the functional way
   public void vavrNullConditionalExecution(String nullableValue) {
     Option.of(nullableValue)
-      .peek(exec::lol);
+      .forEach(exec::lol);
   }
 
 
@@ -62,7 +62,7 @@ public class OptionMonad {
   public void vavrConditionalExecutionOfTheSameMethod(String nullableValue) {
     Option.of(nullableValue)
       .orElse(Option.of(DEFAULT))
-      .peek(exec::lol);
+      .forEach(exec::lol);
   }
 
 
