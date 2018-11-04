@@ -1,4 +1,4 @@
-import helpers.LolExecutor
+import helpers.MethodExecutor
 import spock.lang.Specification
 import spock.lang.Subject
 import spock.lang.Unroll
@@ -7,7 +7,7 @@ import static OptionMonad.DEFAULT
 
 class OptionMonadSpec extends Specification {
 
-  def exec = Mock(LolExecutor)
+  def exec = Mock(MethodExecutor)
 
   @Subject
   OptionMonad option = new OptionMonad(exec)
@@ -45,7 +45,7 @@ class OptionMonadSpec extends Specification {
     option.legacyNullConditionalExecution(null)
 
     then:
-    0 * exec.lol(_)
+    0 * exec.methodOne(_)
   }
 
   def "should legacy null conditional check work with non null value"() {
@@ -55,7 +55,7 @@ class OptionMonadSpec extends Specification {
     option.legacyNullConditionalExecution(input)
 
     then:
-    1 * exec.lol(input)
+    1 * exec.methodOne(input)
   }
 
   def "should vavr null conditional check work with null value"() {
@@ -63,7 +63,7 @@ class OptionMonadSpec extends Specification {
     option.vavrNullConditionalExecution(null)
 
     then:
-    0 * exec.lol(_)
+    0 * exec.methodOne(_)
   }
 
   def "should vavr null conditional check work with non null value"() {
@@ -73,7 +73,7 @@ class OptionMonadSpec extends Specification {
     option.vavrNullConditionalExecution(input)
 
     then:
-    1 * exec.lol(input)
+    1 * exec.methodOne(input)
   }
 
   def "should legacy null conditional execution of the same method work with null value"() {
@@ -81,7 +81,7 @@ class OptionMonadSpec extends Specification {
     option.legacyConditionalExecutionOfTheSameMethod(null)
 
     then:
-    1 * exec.lol(DEFAULT)
+    1 * exec.methodOne(DEFAULT)
   }
 
   def "should legacy null conditional execution of the same method work with non null value"() {
@@ -92,7 +92,7 @@ class OptionMonadSpec extends Specification {
     option.legacyConditionalExecutionOfTheSameMethod(input)
 
     then:
-    1 * exec.lol(input)
+    1 * exec.methodOne(input)
   }
 
   def "should vavr null conditional execution of the same method work with null value"() {
@@ -100,7 +100,7 @@ class OptionMonadSpec extends Specification {
     option.vavrConditionalExecutionOfTheSameMethod(null)
 
     then:
-    1 * exec.lol(DEFAULT)
+    1 * exec.methodOne(DEFAULT)
   }
 
   def "should vavr null conditional execution of the same method work with non null value"() {
@@ -111,7 +111,7 @@ class OptionMonadSpec extends Specification {
     option.vavrConditionalExecutionOfTheSameMethod(input)
 
     then:
-    1 * exec.lol(input)
+    1 * exec.methodOne(input)
   }
 
   def "should legacy null conditional execution of different methods work with null value"() {
@@ -119,7 +119,7 @@ class OptionMonadSpec extends Specification {
     option.legacyConditionalExecutionOfDifferentMethods(null)
 
     then:
-    1 * exec.lol(DEFAULT)
+    1 * exec.methodOne(DEFAULT)
   }
 
   def "should legacy null conditional execution of different methods work with non null value"() {
@@ -130,7 +130,7 @@ class OptionMonadSpec extends Specification {
     option.legacyConditionalExecutionOfDifferentMethods(input)
 
     then:
-    1 * exec.yolo(input)
+    1 * exec.methodTwo(input)
   }
 
   def "should vavr null conditional execution of different methods work with null value"() {
@@ -138,7 +138,7 @@ class OptionMonadSpec extends Specification {
     option.vavrConditionalExecutionOfDifferentMethods(null)
 
     then:
-    1 * exec.lol(DEFAULT)
+    1 * exec.methodOne(DEFAULT)
   }
 
   def "should vavr null conditional execution of different methods work with non null value"() {
@@ -149,7 +149,7 @@ class OptionMonadSpec extends Specification {
     option.vavrConditionalExecutionOfDifferentMethods(input)
 
     then:
-    1 * exec.yolo(input)
+    1 * exec.methodTwo(input)
   }
 
   def "should legacy throw exception on null value"() {
@@ -169,7 +169,7 @@ class OptionMonadSpec extends Specification {
     option.legacyConditionalException(input)
 
     then:
-    1 * exec.lol(input)
+    1 * exec.methodOne(input)
   }
 
   def "should vavr throw exception on null value"() {
@@ -189,7 +189,7 @@ class OptionMonadSpec extends Specification {
     option.vavrConditionalException(input)
 
     then:
-    1 * exec.lol(input)
+    1 * exec.methodOne(input)
   }
 
   @Unroll
@@ -203,8 +203,8 @@ class OptionMonadSpec extends Specification {
     where:
     input    | expectedResult
     null     | DEFAULT
-    "LOLabc" | "1st condition"
-    "abcLOL" | DEFAULT
+    "ONEabc" | "1st condition"
+    "abcONE" | DEFAULT
   }
 
   @Unroll
@@ -218,8 +218,8 @@ class OptionMonadSpec extends Specification {
     where:
     input    | expectedResult
     null     | DEFAULT
-    "LOLabc" | "1st condition"
-    "abcLOL" | DEFAULT
+    "ONEabc" | "1st condition"
+    "abcONE" | DEFAULT
   }
 
   @Unroll
@@ -233,8 +233,8 @@ class OptionMonadSpec extends Specification {
     where:
     input  | expectedResult
     null   | DEFAULT
-    "LOL"  | "LOL123"
-    "YOLO" | "YOLO456"
+    "ONE"  | "ONE123"
+    "TWO" | "TWO456"
     "XYZ"  | "XYZ789"
   }
 
@@ -249,8 +249,8 @@ class OptionMonadSpec extends Specification {
     where:
     input  | expectedResult
     null   | DEFAULT
-    "LOL"  | "LOL123"
-    "YOLO" | "YOLO456"
+    "ONE"  | "ONE123"
+    "TWO" | "TWO456"
     "XYZ"  | "XYZ789"
   }
 
@@ -259,88 +259,88 @@ class OptionMonadSpec extends Specification {
     when:
     option.legacyNestedConditionWithMultipleValues(null, null)
     then:
-    1 * exec.lol(DEFAULT)
+    1 * exec.methodOne(DEFAULT)
 
     when:
-    option.legacyNestedConditionWithMultipleValues(null, "LOL")
+    option.legacyNestedConditionWithMultipleValues(null, "ONE")
     then:
-    1 * exec.lol("LOL")
+    1 * exec.methodOne("ONE")
 
     when:
-    option.legacyNestedConditionWithMultipleValues("YOLO", null)
+    option.legacyNestedConditionWithMultipleValues("TWO", null)
     then:
-    1 * exec.yolo("YOLO")
+    1 * exec.methodTwo("TWO")
 
     when:
-    option.legacyNestedConditionWithMultipleValues("YOLO", "LOL")
+    option.legacyNestedConditionWithMultipleValues("TWO", "ONE")
     then:
-    1 * exec.xD(DEFAULT)
+    1 * exec.methodThree(DEFAULT)
   }
 
   def "should vavr nested conditions with multiple values work"() {
     when:
     option.vavrNestedConditionWithMultipleValues(null, null)
     then:
-    1 * exec.lol(DEFAULT)
+    1 * exec.methodOne(DEFAULT)
 
     when:
-    option.vavrNestedConditionWithMultipleValues(null, "LOL")
+    option.vavrNestedConditionWithMultipleValues(null, "ONE")
     then:
-    1 * exec.lol("LOL")
+    1 * exec.methodOne("ONE")
 
     when:
-    option.vavrNestedConditionWithMultipleValues("YOLO", null)
+    option.vavrNestedConditionWithMultipleValues("TWO", null)
     then:
-    1 * exec.yolo("YOLO")
+    1 * exec.methodTwo("TWO")
 
     when:
-    option.vavrNestedConditionWithMultipleValues("YOLO", "LOL")
+    option.vavrNestedConditionWithMultipleValues("TWO", "ONE")
     then:
-    1 * exec.xD(DEFAULT)
+    1 * exec.methodThree(DEFAULT)
   }
 
   def "should legacy nested conditions with execution work"() {
     when:
     option.legacyNestedConditionsWithExecution(null)
     then:
-    1 * exec.lol(DEFAULT)
+    1 * exec.methodOne(DEFAULT)
 
     when:
-    option.legacyNestedConditionsWithExecution("LOL")
+    option.legacyNestedConditionsWithExecution("ONE")
     then:
-    1 * exec.lol("LOL")
+    1 * exec.methodOne("ONE")
 
     when:
-    option.legacyNestedConditionsWithExecution("YOLO")
+    option.legacyNestedConditionsWithExecution("TWO")
     then:
-    1 * exec.yolo("YOLO")
+    1 * exec.methodTwo("TWO")
 
     when:
     option.legacyNestedConditionsWithExecution("XYZ")
     then:
-    1 * exec.xD("XYZ")
+    1 * exec.methodThree("XYZ")
   }
 
   def "should vavr nested conditions with execution work"() {
     when:
     option.vavrNestedConditionsWithExecution(null)
     then:
-    1 * exec.lol(DEFAULT)
+    1 * exec.methodOne(DEFAULT)
 
     when:
-    option.vavrNestedConditionsWithExecution("LOL")
+    option.vavrNestedConditionsWithExecution("ONE")
     then:
-    1 * exec.lol("LOL")
+    1 * exec.methodOne("ONE")
 
     when:
-    option.vavrNestedConditionsWithExecution("YOLO")
+    option.vavrNestedConditionsWithExecution("TWO")
     then:
-    1 * exec.yolo("YOLO")
+    1 * exec.methodTwo("TWO")
 
     when:
     option.vavrNestedConditionsWithExecution("XYZ")
     then:
-    1 * exec.xD("XYZ")
+    1 * exec.methodThree("XYZ")
   }
 
   @Unroll
@@ -354,8 +354,8 @@ class OptionMonadSpec extends Specification {
     where:
     input    | expectedResult
     null     | "1st condition"
-    "LOLabc" | "1st condition"
-    "abcLOL" | DEFAULT
+    "ONEabc" | "1st condition"
+    "abcONE" | DEFAULT
   }
 
   @Unroll
@@ -369,8 +369,8 @@ class OptionMonadSpec extends Specification {
     where:
     input    | expectedResult
     null     | "1st condition"
-    "LOLabc" | "1st condition"
-    "abcLOL" | DEFAULT
+    "ONEabc" | "1st condition"
+    "abcONE" | DEFAULT
   }
 
 }

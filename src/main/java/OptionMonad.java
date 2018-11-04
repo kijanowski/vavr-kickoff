@@ -6,16 +6,16 @@ import static io.vavr.Patterns.$None;
 import static io.vavr.Patterns.$Some;
 import static io.vavr.Patterns.$Tuple2;
 
-import helpers.LolExecutor;
+import helpers.MethodExecutor;
 import io.vavr.Tuple2;
 import io.vavr.control.Option;
 
 public class OptionMonad {
 
   public static final String DEFAULT = "default";
-  private final LolExecutor exec;
+  private final MethodExecutor exec;
 
-  public OptionMonad(LolExecutor exec) {
+  public OptionMonad(MethodExecutor exec) {
     this.exec = exec;
   }
 
@@ -38,23 +38,23 @@ public class OptionMonad {
   // instead of
   public void legacyNullConditionalExecution(String nullableValue) {
     if (nullableValue != null) {
-      exec.lol(nullableValue);
+      exec.methodOne(nullableValue);
     }
   }
 
   // do it the functional way
   public void vavrNullConditionalExecution(String nullableValue) {
     Option.of(nullableValue)
-      .forEach(exec::lol);
+      .forEach(exec::methodOne);
   }
 
 
   // instead of
   public void legacyConditionalExecutionOfTheSameMethod(String nullableValue) {
     if (nullableValue == null) {
-      exec.lol(DEFAULT);
+      exec.methodOne(DEFAULT);
     } else {
-      exec.lol(nullableValue);
+      exec.methodOne(nullableValue);
     }
   }
 
@@ -62,31 +62,31 @@ public class OptionMonad {
   public void vavrConditionalExecutionOfTheSameMethod(String nullableValue) {
     Option.of(nullableValue)
       .orElse(Option.of(DEFAULT))
-      .forEach(exec::lol);
+      .forEach(exec::methodOne);
   }
 
 
   // instead of
   public void legacyConditionalExecutionOfDifferentMethods(String nullableValue) {
     if (nullableValue == null) {
-      exec.lol(DEFAULT);
+      exec.methodOne(DEFAULT);
     } else {
-      exec.yolo(nullableValue);
+      exec.methodTwo(nullableValue);
     }
   }
 
   // do it the functional way
   public void vavrConditionalExecutionOfDifferentMethods(String nullableValue) {
     Option.of(nullableValue)
-      .peek(exec::yolo)
-      .onEmpty(() -> exec.lol(DEFAULT));
+      .peek(exec::methodTwo)
+      .onEmpty(() -> exec.methodOne(DEFAULT));
   }
 
 
   // instead of
   public void legacyConditionalException(String nullableValue) {
     if (nullableValue != null) {
-      exec.lol(nullableValue);
+      exec.methodOne(nullableValue);
     } else {
       throw new RuntimeException("don't like nulls");
     }
@@ -95,14 +95,14 @@ public class OptionMonad {
   // do it the functional way
   public void vavrConditionalException(String nullableValue) {
     Option.of(nullableValue)
-      .peek(exec::lol)
+      .peek(exec::methodOne)
       .getOrElseThrow(() -> new RuntimeException("don't like nulls"));
   }
 
 
   // instead of
   public String legacyComplexAndConditional(String nullableValue) {
-    if (nullableValue != null && nullableValue.startsWith("LOL")) {
+    if (nullableValue != null && nullableValue.startsWith("ONE")) {
       return "1st condition";
     } else {
       return DEFAULT;
@@ -112,7 +112,7 @@ public class OptionMonad {
   // do it the functional way
   public String vavrComplexAndConditional(String nullableValue) {
     return Option.of(nullableValue)
-      .filter(given -> given.startsWith("LOL"))
+      .filter(given -> given.startsWith("ONE"))
       .map(ignore -> "1st condition")
       .getOrElse(DEFAULT);
   }
@@ -120,7 +120,7 @@ public class OptionMonad {
 
   // instead of
   public String legacyComplexOrConditional(String nullableValue) {
-    if (nullableValue == null || nullableValue.startsWith("LOL")) {
+    if (nullableValue == null || nullableValue.startsWith("ONE")) {
       return "1st condition";
     } else {
       return DEFAULT;
@@ -130,8 +130,8 @@ public class OptionMonad {
   // do it the functional way (not necessarily)
   public String vavrComplexOrConditional(String nullableValue) {
     return Option.of(nullableValue)
-      .orElse(Option.of("LOL"))
-      .filter(given -> given.startsWith("LOL"))
+      .orElse(Option.of("ONE"))
+      .filter(given -> given.startsWith("ONE"))
       .map(ignore -> "1st condition")
       .getOrElse(DEFAULT);
   }
@@ -140,23 +140,23 @@ public class OptionMonad {
   // instead of
   public void legacyNestedConditionWithMultipleValues(String nullableValueA, String nullableValueB) {
     if (nullableValueA == null && nullableValueB == null) {
-      exec.lol(DEFAULT);
+      exec.methodOne(DEFAULT);
     } else if (nullableValueA == null) {  // nullableValueB != null
-      exec.lol(nullableValueB);
+      exec.methodOne(nullableValueB);
     } else if (nullableValueB == null) {  // nullableValueA != null
-      exec.yolo(nullableValueA);
+      exec.methodTwo(nullableValueA);
     } else { // nullableValueA != null && nullableValueB != null
-      exec.xD(DEFAULT);
+      exec.methodThree(DEFAULT);
     }
   }
 
   // do it the functional way
   public void vavrNestedConditionWithMultipleValues(String nullableValueA, String nullableValueB) {
     Match(new Tuple2<>(Option.of(nullableValueA), Option.of(nullableValueB))).of(
-      Case($Tuple2($None(), $None()), () -> run(() -> exec.lol(DEFAULT))),
-      Case($Tuple2($None(), $Some($())), () -> run(() -> exec.lol(nullableValueB))),
-      Case($Tuple2($Some($()), $None()), () -> run(() -> exec.yolo(nullableValueA))),
-      Case($Tuple2($Some($()), $Some($())), () -> run(() -> exec.xD(DEFAULT)))
+      Case($Tuple2($None(), $None()), () -> run(() -> exec.methodOne(DEFAULT))),
+      Case($Tuple2($None(), $Some($())), () -> run(() -> exec.methodOne(nullableValueB))),
+      Case($Tuple2($Some($()), $None()), () -> run(() -> exec.methodTwo(nullableValueA))),
+      Case($Tuple2($Some($()), $Some($())), () -> run(() -> exec.methodThree(DEFAULT)))
     );
   }
 
@@ -165,9 +165,9 @@ public class OptionMonad {
   public String legacyNestedConditionsWithReturn(String nullableValue) {
     if (nullableValue == null) {
       return DEFAULT;
-    } else if (nullableValue.startsWith("LOL")) {
+    } else if (nullableValue.startsWith("ONE")) {
       return nullableValue.concat("123");
-    } else if (nullableValue.startsWith("YOLO")) {
+    } else if (nullableValue.startsWith("TWO")) {
       return nullableValue.concat("456");
     } else {
       return nullableValue.concat("789");
@@ -178,8 +178,8 @@ public class OptionMonad {
   public String vavrNestedConditionsWithReturn(String nullableValue) {
     return Match(Option.of(nullableValue)).of(
       Case($None(), () -> DEFAULT),
-      Case($Some($(v -> v.startsWith("LOL"))), () -> nullableValue.concat("123")),
-      Case($Some($(v -> v.startsWith("YOLO"))), () -> nullableValue.concat("456")),
+      Case($Some($(v -> v.startsWith("ONE"))), () -> nullableValue.concat("123")),
+      Case($Some($(v -> v.startsWith("TWO"))), () -> nullableValue.concat("456")),
       Case($Some($()), () -> nullableValue.concat("789"))
     );
   }
@@ -188,23 +188,23 @@ public class OptionMonad {
   // instead of
   public void legacyNestedConditionsWithExecution(String nullableValue) {
     if (nullableValue == null) {
-      exec.lol(DEFAULT);
-    } else if (nullableValue.startsWith("LOL")) {
-      exec.lol(nullableValue);
-    } else if (nullableValue.startsWith("YOLO")) {
-      exec.yolo(nullableValue);
+      exec.methodOne(DEFAULT);
+    } else if (nullableValue.startsWith("ONE")) {
+      exec.methodOne(nullableValue);
+    } else if (nullableValue.startsWith("TWO")) {
+      exec.methodTwo(nullableValue);
     } else {
-      exec.xD(nullableValue);
+      exec.methodThree(nullableValue);
     }
   }
 
   // do it the functional way
   public void vavrNestedConditionsWithExecution(String nullableValue) {
     Match(Option.of(nullableValue)).of(
-      Case($None(), () -> run(() -> exec.lol(DEFAULT))),
-      Case($Some($(v -> v.startsWith("LOL"))), () -> run(() -> exec.lol(nullableValue))),
-      Case($Some($(v -> v.startsWith("YOLO"))), () -> run(() -> exec.yolo(nullableValue))),
-      Case($Some($()), () -> run(() -> exec.xD(nullableValue)))
+      Case($None(), () -> run(() -> exec.methodOne(DEFAULT))),
+      Case($Some($(v -> v.startsWith("ONE"))), () -> run(() -> exec.methodOne(nullableValue))),
+      Case($Some($(v -> v.startsWith("TWO"))), () -> run(() -> exec.methodTwo(nullableValue))),
+      Case($Some($()), () -> run(() -> exec.methodThree(nullableValue)))
     );
   }
 
