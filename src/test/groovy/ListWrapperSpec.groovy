@@ -80,35 +80,15 @@ class ListWrapperSpec extends Specification {
   }
 
   @Unroll
-  def "should join lists the legacy way 1"() {
+  def "should join lists the legacy way"() {
     expect:
     wrapper.legacyJoiningLists1(fruits, priceList) == result
-    where:
-    fruits                        | priceList          || result
-    ["orange", "apple"]           | [10.0, 15.0]       || ["orange": 10.0, "apple": 15.0]
-    ["orange", "apple", "banana"] | [10.0, 15.0]       || ["orange": 10.0, "apple": 15.0, "banana": 0]
-    ["orange", "apple"]           | [10.0, 15.0, 20.0] || ["orange": 10.0, "apple": 15.0]
-  }
-
-  @Unroll
-  def "should join lists the legacy way 2"() {
-    expect:
     wrapper.legacyJoiningLists2(fruits, priceList) == result
-    where:
-    fruits                        | priceList          || result
-    ["orange", "apple"]           | [10.0, 15.0]       || ["orange": 10.0, "apple": 15.0]
-    ["orange", "apple", "banana"] | [10.0, 15.0]       || ["orange": 10.0, "apple": 15.0, "banana": 0]
-    ["orange", "apple"]           | [10.0, 15.0, 20.0] || ["orange": 10.0, "apple": 15.0]
-  }
-
-  @Unroll
-  def "should join lists the legacy way 3"() {
-    expect:
     wrapper.legacyJoiningLists3(fruits, priceList) == result
     where:
     fruits                        | priceList          || result
     ["orange", "apple"]           | [10.0, 15.0]       || ["orange": 10.0, "apple": 15.0]
-    ["orange", "apple", "banana"] | [10.0, 15.0]       || ["orange": 10.0, "apple": 15.0, "banana": BigDecimal.ZERO]
+    ["orange", "apple", "banana"] | [10.0, 15.0]       || ["orange": 10.0, "apple": 15.0, "banana": 0]
     ["orange", "apple"]           | [10.0, 15.0, 20.0] || ["orange": 10.0, "apple": 15.0]
   }
 
