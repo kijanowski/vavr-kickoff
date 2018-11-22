@@ -42,7 +42,7 @@ public class ListWrapper {
 
   // do it the functional way
   public io.vavr.collection.Seq<Integer> vavrIterate(Integer... ints) {
-    return io.vavr.collection.List
+    return io.vavr.collection.Stream
       .of(ints)
       .map(i -> i + 1)
       .peek(System.out::println);
