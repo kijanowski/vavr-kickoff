@@ -44,11 +44,9 @@ public class FlatMapSamples {
 
   public Try<String> flatMapTryOfTry(String text) {
     Try<Try<String>> tryOfTry = wrapThrowOnXYZ(text) // start a Try context
-      .map(s -> anotherTryWrapper(s)); // we're inside map - a Try context - and call another method returning a Try leaving us with a
-    // Try<Try<String>>
+      .map(s -> anotherTryWrapper(s)); // we're inside map - a Try context - and call another method returning a Try leaving us with a Try<Try<String>>
 
-    /* !! NOT THE WAY TO GO !! */
-    return tryOfTry.get(); /* !! NOT THE WAY TO GO !! */
+    /* !! NOT THE WAY TO GO !! */ return tryOfTry.get(); /* !! NOT THE WAY TO GO !! */
   }
 
   public Try<String> properFlatMapTryOfTry(String text) {
@@ -61,11 +59,9 @@ public class FlatMapSamples {
   public Option<String> flatMapOptionOfOption(String nullableText) {
     Option<Option<String>> optionOfOption = Option
       .of(nullableText)
-      .map(s -> optionWrapper(s)); // we're inside map - an Option context - abd call another method returning an Option leaving us with an
-    // Option<Option<String>>
+      .map(s -> optionWrapper(s)); // we're inside map - an Option context - abd call another method returning an Option leaving us with an Option<Option<String>>
 
-    /* !! NOT THE WAY TO GO !! */
-    return optionOfOption.get(); /* !! NOT THE WAY TO GO !! */
+    /* !! NOT THE WAY TO GO !! */ return optionOfOption.get(); /* !! NOT THE WAY TO GO !! */
   }
 
   public Option<String> properFlatMapOptionOfOption(String nullableText) {
